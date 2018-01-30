@@ -4,15 +4,15 @@ pragma solidity ^0.4.11;
 import "./Haltable.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./JincorToken.sol";
+import "./StarCoin.sol";
 
 
-contract JincorTokenPreSale is Haltable {
+contract StarCoinPreSale is Haltable {
   using SafeMath for uint;
 
-  string public constant name = "Jincor Token PreSale";
+  string public constant name = "StarCoin PreSale";
 
-  JincorToken public token;
+  StarCoin public token;
 
   address public beneficiary;
 
@@ -58,24 +58,24 @@ contract JincorTokenPreSale is Haltable {
     _;
   }
 
-  function JincorTokenPreSale(
-    uint _hardCapUSD,
-    uint _softCapUSD,
+  function StarCoinPreSale(
+    uint _hardCap,
+    uint _softCap,
     address _token,
     address _beneficiary,
     uint _totalTokens,
-    uint _priceETH,
-    uint _purchaseLimitUSD,
-
+    uint _purchaseLimit, // In ETH
     uint _startBlock,
     uint _endBlock
   ) {
-    hardCap = _hardCapUSD.mul(1 ether).div(_priceETH);
-    softCap = _softCapUSD.mul(1 ether).div(_priceETH);
+    hardCap = _hardCap;
+    softCap = _softCap;
+    purchaseLimit = _purchaseLimit;
+
+    // This might be incorrect?
     price = _totalTokens.mul(1 ether).div(hardCap);
 
-    purchaseLimit = _purchaseLimitUSD.mul(1 ether).div(_priceETH).mul(price);
-    token = JincorToken(_token);
+    token = StarCoin(_token);
     beneficiary = _beneficiary;
 
     startBlock = _startBlock;

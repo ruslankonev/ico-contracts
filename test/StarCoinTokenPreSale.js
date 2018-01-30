@@ -1,15 +1,14 @@
-const JincorToken = artifacts.require("JincorToken");
-const JincorTokenPreSale = artifacts.require("JincorTokenPreSale");
+const StarCoin = artifacts.require("StarCoin");
+const StarCoinPreSale = artifacts.require("StarCoinPreSale");
 
 const assertJump = function(error) {
   assert.isAbove(error.message.search('VM Exception while processing transaction: revert'), -1, 'Invalid opcode error must be returned');
 };
 
-const hardCap = 700; //in USD
-const softCap = 500; //in USD
-const limit = 250; //in USD
+const hardCap = 12916; //in ETH
+const softCap = 0; //in ETH, i.e no soft cap
+const limit = 4000; //in ETH, i.e one third
 const beneficiary = web3.eth.accounts[0];
-const ethUsdPrice = 250; //in USD
 
 function advanceToBlock(number) {
   if (web3.eth.blockNumber > number) {
@@ -21,15 +20,15 @@ function advanceToBlock(number) {
   }
 }
 
-contract('JincorTokenPresale', function (accounts) {
+contract('StarCoinPresale', function (accounts) {
   beforeEach(async function () {
     this.startBlock = web3.eth.blockNumber;
     this.endBlock = web3.eth.blockNumber + 15;
 
-    this.token = await JincorToken.new();
-    const totalTokens = 2800; //NOT in wei, converted by contract
+    this.token = await StarCoin.new();
+    const totalTokens = 6328760; //NOT in wei, converted by contract
 
-    this.crowdsale = await JincorTokenPreSale.new(hardCap, softCap, this.token.address, beneficiary, totalTokens, ethUsdPrice, limit, this.startBlock, this.endBlock);
+    this.crowdsale = await StarCoinPreSale.new(hardCap, softCap, this.token.address, beneficiary, totalTokens, limit, this.startBlock, this.endBlock);
     this.token.setTransferAgent(this.token.address, true);
     this.token.setTransferAgent(this.crowdsale.address, true);
     this.token.setTransferAgent(accounts[0], true);
@@ -125,9 +124,9 @@ contract('JincorTokenPresale', function (accounts) {
     assert.fail('should have thrown before');
   });
 
-  it('should not allow to send less than 0.1 ETH', async function () {
+  it('should not allow to send less than 0.5 ETH', async function () {
     try {
-      await this.crowdsale.sendTransaction({value: 0.0999 * 10 ** 18, from: accounts[2]});
+      await this.crowdsale.sendTransaction({value: 0.04999 * 10 ** 18, from: accounts[2]});
     } catch (error) {
       return assertJump(error);
     }
@@ -218,18 +217,18 @@ contract('JincorTokenPresale', function (accounts) {
     await this.crowdsale.sendTransaction({value: 1 * 10 ** 18, from: accounts[2]});
 
     const oldBenBalanceEth = web3.eth.getBalance(beneficiary);
-    const oldBenBalanceJcr = await this.token.balanceOf(beneficiary).valueOf();
+    const oldBenBalanceStar = await this.token.balanceOf(beneficiary).valueOf();
 
     await this.crowdsale.withdraw();
 
     const newBenBalanceEth = web3.eth.getBalance(beneficiary);
-    const newBenBalanceJcr = await this.token.balanceOf(beneficiary).valueOf();
-    const preSaleContractBalanceJcr = await this.token.balanceOf(this.crowdsale.address).valueOf();
+    const newBenBalanceStar = await this.token.balanceOf(beneficiary).valueOf();
+    const preSaleContractBalanceStar = await this.token.balanceOf(this.crowdsale.address).valueOf();
     const preSaleContractBalanceEth = web3.eth.getBalance(this.crowdsale.address);
 
     assert.equal(newBenBalanceEth > oldBenBalanceEth, true);
-    assert.equal(newBenBalanceJcr > oldBenBalanceJcr, true);
-    assert.equal(preSaleContractBalanceJcr, 0);
+    assert.equal(newBenBalanceStar > oldBenBalanceStar, true);
+    assert.equal(preSaleContractBalanceStar, 0);
     assert.equal(preSaleContractBalanceEth, 0);
   });
 

@@ -3,28 +3,22 @@ pragma solidity ^0.4.11;
 import "./Haltable.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./JincorToken.sol";
+import "./StarCoin.sol";
 import "./InvestorWhiteList.sol";
-import "./abstract/PriceReceiver.sol";
 
-contract JincorTokenICO is Haltable, PriceReceiver {
+contract StartCoinICO is Haltable {
   using SafeMath for uint;
 
-  string public constant name = "Jincor Token ICO";
+  string public constant name = "StarCoin ICO";
 
-  JincorToken public token;
+  StarCoin public token;
 
   address public beneficiary;
 
+  // remember to set this once the pre-ICO address is known
   address public constant preSaleAddress = 0x949C9B8dFf9b264CAD57F69Cd98ECa1338F05B39;
 
   InvestorWhiteList public investorWhiteList;
-
-  uint public constant jcrUsdRate = 100; //in cents
-
-  uint public ethUsdRate;
-
-  uint public btcUsdRate;
 
   uint public hardCap;
 
@@ -45,6 +39,8 @@ contract JincorTokenICO is Haltable, PriceReceiver {
   bool public crowdsaleFinished = false;
 
   mapping (address => uint) public deposited;
+
+  // This is where the thresholds for referral bonuses are defined
 
   uint constant VOLUME_20_REF_7 = 5000 ether;
 
@@ -77,7 +73,7 @@ contract JincorTokenICO is Haltable, PriceReceiver {
   }
 
   modifier minInvestment() {
-    require(msg.value >= 0.1 * 1 ether);
+    require(msg.value >= 0.5 * 1 ether);
     _;
   }
 
@@ -86,30 +82,25 @@ contract JincorTokenICO is Haltable, PriceReceiver {
     _;
   }
 
-  function JincorTokenICO(
-    uint _hardCapJCR,
-    uint _softCapJCR,
+  function StarCoinICO(
+    uint _hardCapSTAR,
+    uint _softCapSTAR,
     address _token,
     address _beneficiary,
     address _investorWhiteList,
-    uint _baseEthUsdPrice,
-    uint _baseBtcUsdPrice,
-
     uint _startBlock,
     uint _endBlock
   ) {
-    hardCap = _hardCapJCR.mul(1 ether);
-    softCap = _softCapJCR.mul(1 ether);
+    hardCap = _hardCapSTAR.mul(1 ether);
+    softCap = _softCapSTAR.mul(1 ether);
 
-    token = JincorToken(_token);
+    token = StarCoin(_token);
     beneficiary = _beneficiary;
     investorWhiteList = InvestorWhiteList(_investorWhiteList);
 
     startBlock = _startBlock;
     endBlock = _endBlock;
 
-    ethUsdRate = _baseEthUsdPrice;
-    btcUsdRate = _baseBtcUsdPrice;
   }
 
   function() payable minInvestment inWhiteList {
@@ -137,26 +128,27 @@ contract JincorTokenICO is Haltable, PriceReceiver {
   }
 
   function calculateBonus(uint tokens) internal constant returns (uint bonus) {
+    // 20 %
     if (msg.value >= VOLUME_20_REF_7) {
       return tokens.mul(20).div(100);
     }
-
+    // 15 %
     if (msg.value >= VOLUME_15_REF_6) {
       return tokens.mul(15).div(100);
     }
-
+    // 12.5 %
     if (msg.value >= VOLUME_12d5_REF_5d5) {
       return tokens.mul(125).div(1000);
     }
-
+    // 10 %
     if (msg.value >= VOLUME_10_REF_5) {
       return tokens.mul(10).div(100);
     }
-
+    // 7 %
     if (msg.value >= VOLUME_7_REF_4) {
       return tokens.mul(7).div(100);
     }
-
+    // 5 %
     if (msg.value >= VOLUME_5_REF_3) {
       return tokens.mul(5).div(100);
     }
@@ -192,26 +184,6 @@ contract JincorTokenICO is Haltable, PriceReceiver {
     return 0;
   }
 
-  function receiveEthPrice(uint ethUsdPrice) external onlyEthPriceProvider {
-    require(ethUsdPrice > 0);
-    ethUsdRate = ethUsdPrice;
-  }
-
-  function receiveBtcPrice(uint btcUsdPrice) external onlyBtcPriceProvider {
-    require(btcUsdPrice > 0);
-    btcUsdRate = btcUsdPrice;
-  }
-
-  function setEthPriceProvider(address provider) external onlyOwner {
-    require(provider != 0x0);
-    ethPriceProvider = provider;
-  }
-
-  function setBtcPriceProvider(address provider) external onlyOwner {
-    require(provider != 0x0);
-    btcPriceProvider = provider;
-  }
-
   function setNewWhiteList(address newWhiteList) external onlyOwner {
     require(newWhiteList != 0x0);
     investorWhiteList = InvestorWhiteList(newWhiteList);
@@ -220,8 +192,8 @@ contract JincorTokenICO is Haltable, PriceReceiver {
   function doPurchase() private icoActive inNormalState {
     require(!crowdsaleFinished);
 
-    uint tokens = msg.value.mul(ethUsdRate).div(jcrUsdRate);
-    uint referralBonus = calculateReferralBonus(tokens);
+    uint tokens = msg.value;
+    uint referralBonus = calculateReferralBonus(tokens); // It is based on the number of STAR not ETH!! => Some of the tests are incorrect
     address referral = investorWhiteList.getReferralOf(msg.sender);
 
     tokens = tokens.add(calculateBonus(tokens));
