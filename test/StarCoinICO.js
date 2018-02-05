@@ -28,7 +28,7 @@ contract('StarCoinICO', function (accounts) {
     this.token = await StarCoin.new();
     this.whiteList = await InvestorWhiteList.new();
 
-    this.crowdsale = await StarCoinICO.new(hardCap, softCap, this.token.address, beneficiary, this.whiteList.address, ethUsdPrice, btcUsdPrice, this.startBlock, this.endBlock);
+    this.crowdsale = await StarCoinICO.new(hardCap, softCap, this.token.address, beneficiary, this.whiteList.address, this.startBlock, this.endBlock);
     this.token.setTransferAgent(this.token.address, true);
     this.token.setTransferAgent(this.crowdsale.address, true);
     this.token.setTransferAgent(accounts[0], true);

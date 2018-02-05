@@ -119,6 +119,7 @@ contract('StarCoinPresale', function (accounts) {
     try {
       await this.crowdsale.sendTransaction({value: 0.11 * 10 ** 18, from: accounts[2]});
     } catch (error) {
+      console.log(error)
       return assertJump(error);
     }
     assert.fail('should have thrown before');
@@ -134,7 +135,7 @@ contract('StarCoinPresale', function (accounts) {
   });
 
   it('should not allow to exceed purchase limit with 1 purchase', async function () {
-    const amount = ((limit / ethUsdPrice) + 1) * 10 ** 18;
+    const amount = (limit  + 1) * 10 ** 18;
 
     try {
       await this.crowdsale.sendTransaction({value: amount, from: accounts[2]});

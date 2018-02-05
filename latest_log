@@ -1,0 +1,40 @@
+ truffle migrate --network kovan
+Using network 'kovan'.
+
+Running migration: 1_initial_migration.js
+  Replacing Migrations...
+  ... 0x241f18b824d399359f73834547b498552c4b86e22672ff8667946d962f1c098d
+  Migrations: 0x6e2e2ade9b917d27b5deffd739dd3ef1e2923532
+Saving successful migration to network...
+  ... 0x46a7d2a51f222fb73455d58f8688b1615f8fa16bebb9abd416c07318525478e9
+Saving artifacts...
+Running migration: 2_deploy_contracts.js
+  Replacing SafeMath...
+  ... 0x804150cbd657209f1ec39d0ca1da452b7737440f2d109b2d5e5cea6d99fd5517
+  SafeMath: 0xeed04a2d513571e0cfd15fa5f82bfc9b2d94daa6
+  Replacing StarCoin...
+  ... 0x39a5409d64915a66b5b6fc0a04569f592aa0774859b4760444ae85215ca4fdb2
+  StarCoin: 0x9c171d43b2d4b83edf5d0242e4f1e9aec515baee
+Saving artifacts...
+beneficiary 0x4452a8549c3fad700d1e27c5b2c7de1563e4d262
+Running migration: 3_deploy_ico_contract.js
+startBlock 5745486
+  Replacing SafeMath...
+  Deploying StarCoinPreSale...
+  ... 0x3133d883638bcb54b987e4e04f8270aec5ffc4fb216f7a46e90ab791c91c0366
+(node:17726) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 1): ProviderError: Transaction gas price is too low. There is another transaction with same nonce in the queue. Try increasing the gas price or incrementing the nonce.
+(node:17726) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+  SafeMath: 0xa0437feb87127308eb9096118b198aa05ab25241
+  Replacing StarCoin...
+  ... 0x8c29a670879a53842c6d46b6ea6360b211282bdd605abccde946e3da5ff60296
+  StarCoin: 0xd334029e57eb6715e781822e1b1f425c8bf54aeb
+Saving artifacts...
+beneficiary 0x4452a8549c3fad700d1e27c5b2c7de1563e4d262
+startBlock 5745490
+endBlock 5747490
+  Deploying InvestorWhiteList...
+  ... 0x71a3ddce60b88f1d81781c62dcfd1e28c88819b74e1d133e42ee642fbb747a6d
+  InvestorWhiteList: 0x1c0fd02f91c58edfad591e5f726e24933e8a946b
+  Deploying StarCoinICO...
+  ... 0xafe1034c3b9bb5f232ecbfba1124b811d1abcd3cb8e2cb69a45606b2907050f2
+  StarCoinICO: 0x102e4e539f3ad6b88b5c5f76ac2802bd792a2abd
