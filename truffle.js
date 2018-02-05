@@ -13,7 +13,8 @@ module.exports = {
     },
     kovan: {
       provider: function() { return new HDWalletProvider(mnemonic, "https://kovan.infura.io/SzWLgyLfKtsI5qlqcpmX",1) },
-      network_id: 3
+      network_id: 3,
+      gas: 4600000 // how high does it need to be?
     }
   },
 };
