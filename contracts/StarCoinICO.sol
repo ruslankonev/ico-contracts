@@ -6,7 +6,7 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./StarCoin.sol";
 import "./InvestorWhiteList.sol";
 
-contract StarCoinICO is Haltable {
+contract StartCoinICO is Haltable {
   using SafeMath for uint;
 
   string public constant name = "StarCoin ICO";
@@ -16,8 +16,7 @@ contract StarCoinICO is Haltable {
   address public beneficiary;
 
   // remember to set this once the pre-ICO address is known
-  address public constant preSaleAddress = 0x45a69909e13c4c3797e7d8a691d21c59bd818731;
-
+  address public constant preSaleAddress = 0x949C9B8dFf9b264CAD57F69Cd98ECa1338F05B39;
 
   InvestorWhiteList public investorWhiteList;
 

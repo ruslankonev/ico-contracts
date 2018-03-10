@@ -12,18 +12,10 @@ module.exports = function(deployer) {
     const token = StarCoin.address;
     const totalTokens = 6328760; //NOT in wei, converted by contract
     const limit = 4000; //in ETH
-    var beneficiary;
-    web3.eth.getAccounts( (err,res) => {
-      beneficiary = res[0];
-      console.log("beneficiary", beneficiary);
-    })
+    const beneficiary = web3.eth.accounts[0];
+    const startBlock = web3.eth.blockNumber;
+    const endBlock = web3.eth.blockNumber + 100;
 
-    web3.eth.getBlockNumber( (err, res) => {
-      const startBlock = res;
-      console.log("startBlock", startBlock);
-      const endBlock = startBlock + 100;
-      deployer.deploy(StarCoinPreSale, hardCap, softCap, token, beneficiary, totalTokens, limit, startBlock, endBlock);
-    })
-
+    deployer.deploy(StarCoinPreSale, hardCap, softCap, token, beneficiary, totalTokens, limit, startBlock, endBlock);
   });
 };
